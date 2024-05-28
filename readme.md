@@ -17,7 +17,7 @@ docker-compose -p $project_name -f .devcontainer/docker-compose.yml down
 ```sh
 # Build and Open the project container in VSCode - development environment 
 ./start_devcontainer.sh
-./start_devcontainer.sh development
+./start_devcontainer.sh WebApp development
 ./start_devcontainer.sh WebApp dev
 
 # Build and Open the project container in VSCode - development environment 
