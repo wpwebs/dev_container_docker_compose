@@ -10,9 +10,16 @@ print_usage() {
   exit 1
 }
 
+# Define the project name and image tag
+# Convert to lowercase
+project=$(echo "$project_name" | tr '[:upper:]' '[:lower:]')
+# Replace spaces with underscores
+project="${project// /_}"
+
+workspace_folder="/code"
+
 # Set default environment if not provided
 environment=${2:-development}
-target=$environment
 
 # Validate the environment argument
 if [[ "$environment" != "development" && "$environment" != "dev" && "$environment" != "production" && "$environment" != "prod" ]]; then
@@ -20,27 +27,22 @@ if [[ "$environment" != "development" && "$environment" != "dev" && "$environmen
   print_usage
 fi
 
-if [[ "$environment" == "dev" ]]; then
+if [[ "$environment" == "dev" ]] || [[ "$environment" == "development" ]]; then
   environment=development
+  # Define the container name
+  container_name="$project-dev-container"
 fi
 
-if [[ "$environment" == "prod" ]]; then
+if [[ "$environment" == "prod" ]] || [[ "$environment" == "production" ]]; then
   environment=production
+  # Define the container name
+  container_name="$project-prod-container"
 fi
 
 # Use sed command searches for the "name" key and replaces its value with the project_name
 sed -i.bak -E "s/\"name\": \"[^\"]+\"/\"name\": \"$project_name\"/" .devcontainer/devcontainer.json
 rm .devcontainer/devcontainer.json.bak
 
-# Define the project name and image tag
-# Convert to lowercase
-project=$(echo "$project_name" | tr '[:upper:]' '[:lower:]')
-# Replace spaces with underscores
-project="${project// /_}"
-
-# Define the container name
-container_name="$project-container"
-workspace_folder="/code"
 
 # Define the Dockerfile and context directory
 dockerfile_path=".devcontainer/Dockerfile"
